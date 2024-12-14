@@ -3,9 +3,12 @@ services:
       build:
             context: ./django
             dockerfile: Dockerfile.prod
-
-      command: gunicorn project.wsgi:application --bind 0.0.0.0:8000
-
+      restart: on-failure
+      command: sh -c "python manage.py createsuperuser --noinput && gunicorn project.wsgi:application --bind 0.0.0.0:8000"
+      environment:
+            - DJANGO_SUPERUSER_USERNAME=admin
+            - DJANGO_SUPERUSER_PASSWORD=admin
+            - DJANGO_SUPERUSER_EMAIL=admin@admin.com
       expose:
             - 8000
       volumes:
